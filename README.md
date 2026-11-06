@@ -93,4 +93,4 @@ Run the following commands inside the project folder (`Project-3-Student-Managem
 1. **`students`**: `id` (Primary Key), `name`, `roll` (Unique), `class`
 2. **`attendance`**: `id` (Primary Key), `student_id` (Foreign Key), `date`, `status` (`UNIQUE(student_id, date)`)
 3. **`marks`**: `id` (Primary Key), `student_id` (Foreign Key), `subject`, `marks`
-DevOps integration started: Git and GitHub configured successfully.
+DevOps integration started: Git and GitHub configured successfully.Testing automatic Jenkins build
