@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Attendance Management | Student Management System{% endblock %}
+{% block page_title %}Attendance Management{% endblock %}
+{% block page_subtitle %}Record daily student attendance and review historical attendance logs{% endblock %}
+
+{% block content %}
+<!-- Today's Attendance Summary Strip -->
+<section class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="stat-card-box">
+        <div class="stat-meta">
+            <span>Total Registered Students</span>
+            <h3>{{ students | length }}</h3>
+            <small>Eligible for attendance</small>
+        </div>
+        <div class="stat-icon navy">
+            <i class="fa-solid fa-users"></i>
+        </div>
+    </div>
+
+    <div class="stat-card-box">
+        <div class="stat-meta">
+            <span>Present Today ({{ today }})</span>
+            <h3>{{ present_today }}</h3>
+            <small>Marked Present today</small>
+        </div>
+        <div class="stat-icon green">
+            <i class="fa-solid fa-user-check"></i>
+        </div>
+    </div>
+
+    <div class="stat-card-box">
+        <div class="stat-meta">
+            <span>Absent Today ({{ today }})</span>
+            <h3>{{ absent_today }}</h3>
+            <small>Marked Absent today</small>
+        </div>
+        <div class="stat-icon red">
+            <i class="fa-solid fa-user-xmark"></i>
+        </div>
+    </div>
+</section>
+
+<div class="page-split-layout">
+    <!-- Left Column: Mark Attendance Form -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <i class="fa-solid fa-calendar-check"></i>
+                <h3>Mark Student Attendance</h3>
+            </div>
+        </div>
+        <div class="panel-body">
+            {% if students %}
+            <form method="POST" class="portal-form">
+                <div class="form-field">
+                    <label for="student_id">Select Student</label>
+                    <select id="student_id" name="student_id" required>
+                        {% for s in students %}
+                        <option value="{{ s.id }}">{{ s.name }} ({{ s.roll }} — {{ s['class'] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="date">Attendance Date</label>
+                    <input type="date" id="date" name="date" value="{{ today }}" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="status">Attendance Status</label>
+                    <select id="status" name="status" required>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Submit Attendance</span>
+                </button>
+            </form>
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-user-plus"></i>
+                <p>No students registered yet.</p>
+                <a href="/students" class="btn-action primary" style="margin-top: 10px;">Register Students First</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Column: Attendance History Table -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <h3>Attendance History ({{ attendance_records | length }})</h3>
+            </div>
+
+            <div class="search-box-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Filter by student, roll or date..."
+                    data-search-target="attendance-table"
+                >
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="portal-table" id="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Roll Number</th>
+                        <th>Student Name</th>
+                        <th>Class</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    <tr class="data-row">
+                        <td><i class="fa-regular fa-calendar" style="color: #64748b; margin-right: 6px;"></i>{{ record.date }}</td>
+                        <td><span class="roll-badge">{{ record.roll }}</span></td>
+                        <td><strong>{{ record.name }}</strong></td>
+                        <td><span class="class-badge">{{ record['class'] }}</span></td>
+                        <td>
+                            {% if record.status == 'Present' %}
+                                <span class="badge-present"><i class="fa-solid fa-circle-check"></i> Present</span>
+                            {% else %}
+                                <span class="badge-absent"><i class="fa-solid fa-circle-xmark"></i> Absent</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fa-regular fa-calendar-xmark"></i>
+                            <p>No attendance records have been logged yet.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="no-search-results" style="display: none;">
+                        <td colspan="5" class="empty-state">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <p>No matching attendance records found.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

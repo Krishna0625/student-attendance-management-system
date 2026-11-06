@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Student Management System{% endblock %}
+{% block page_title %}Faculty Dashboard{% endblock %}
+{% block page_subtitle %}Real-time overview of student enrollment, daily attendance, and academic metrics{% endblock %}
+
+{% block content %}
+<!-- Top 4 Statistic Cards (Backed by SQLite Records) -->
+<section class="stats-grid">
+    <div class="stat-card-box">
+        <div class="stat-meta">
+            <span>Total Students</span>
+            <h3>{{ total }}</h3>
+            <small>Registered in database</small>
+        </div>
+        <div class="stat-icon navy">
+            <i class="fa-solid fa-users"></i>
+        </div>
+    </div>
+
+    <div class="stat-card-box">
+        <div class="stat-meta">
+            <span>Students Present Today</span>
+            <h3>{{ present_today }}</h3>
+            <small>Date: {{ today }}</small>
+        </div>
+        <div class="stat-icon green">
+            <i class="fa-solid fa-user-check"></i>
+        </div>
+    </div>
+
+    <div class="stat-card-box">
+        <div class="stat-meta">
+            <span>Students Absent Today</span>
+            <h3>{{ absent_today }}</h3>
+            <small>Date: {{ today }}</small>
+        </div>
+        <div class="stat-icon red">
+            <i class="fa-solid fa-user-xmark"></i>
+        </div>
+    </div>
+
+    <div class="stat-card-box">
+        <div class="stat-meta">
+            <span>Attendance Percentage</span>
+            <h3>{{ attendance_percentage }}%</h3>
+            <small>Overall recorded attendance</small>
+        </div>
+        <div class="stat-icon blue">
+            <i class="fa-solid fa-chart-pie"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Action Buttons -->
+<section class="quick-actions-bar">
+    <div class="quick-actions-title">
+        <i class="fa-solid fa-bolt"></i>
+        <h4>Quick Faculty Actions</h4>
+    </div>
+    <div class="quick-actions-buttons">
+        <a href="/students" class="btn-action primary">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Add Student</span>
+        </a>
+        <a href="/attendance" class="btn-action">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Mark Attendance</span>
+        </a>
+        <a href="/marks" class="btn-action">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Enter Internal Marks</span>
+        </a>
+        <a href="/report" class="btn-action">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Performance Reports</span>
+        </a>
+    </div>
+</section>
+
+<!-- Two-Column Section: Recent Students & Today's Attendance Summary -->
+<section class="content-grid-2">
+    <!-- Left Card: Recent Registered Students -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <i class="fa-solid fa-user-graduate"></i>
+                <h3>Recent Registered Students</h3>
+            </div>
+            <a href="/students" class="btn-action">View All ({{ total }})</a>
+        </div>
+        <div class="table-responsive">
+            <table class="portal-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Student Name</th>
+                        <th>Roll Number</th>
+                        <th>Class</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in recent_students %}
+                    <tr>
+                        <td>#{{ s.id }}</td>
+                        <td><strong>{{ s.name }}</strong></td>
+                        <td><span class="roll-badge">{{ s.roll }}</span></td>
+                        <td><span class="class-badge">{{ s['class'] }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            <i class="fa-solid fa-user-slash"></i>
+                            <p>No students registered yet.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Right Card: Today's Attendance Summary -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <i class="fa-solid fa-clipboard-user"></i>
+                <h3>Today's Attendance Summary ({{ today }})</h3>
+            </div>
+            <a href="/attendance" class="btn-action">Mark Now</a>
+        </div>
+        <div class="panel-body">
+            <div class="summary-strip">
+                <div class="summary-mini-box">
+                    <span>Present</span>
+                    <strong style="color: #15803d;">{{ present_today }}</strong>
+                </div>
+                <div class="summary-mini-box">
+                    <span>Absent</span>
+                    <strong style="color: #b91c1c;">{{ absent_today }}</strong>
+                </div>
+                <div class="summary-mini-box">
+                    <span>Unmarked</span>
+                    <strong>{{ unmarked_today }}</strong>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="portal-table">
+                    <thead>
+                        <tr>
+                            <th>Roll No</th>
+                            <th>Student Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for rec in today_records %}
+                        <tr>
+                            <td><span class="roll-badge">{{ rec.roll }}</span></td>
+                            <td><strong>{{ rec.name }}</strong></td>
+                            <td>
+                                {% if rec.status == 'Present' %}
+                                    <span class="badge-present"><i class="fa-solid fa-check"></i> Present</span>
+                                {% else %}
+                                    <span class="badge-absent"><i class="fa-solid fa-xmark"></i> Absent</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                <i class="fa-regular fa-calendar-xmark"></i>
+                                <p>No attendance marked for today ({{ today }}) yet.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Internal Marks | Student Management System{% endblock %}
+{% block page_title %}Internal Examination Marks{% endblock %}
+{% block page_subtitle %}Enter subject-wise internal marks and review recorded assessments{% endblock %}
+
+{% block content %}
+<div class="page-split-layout">
+    <!-- Left Column: Enter Internal Marks Form -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <i class="fa-solid fa-file-signature"></i>
+                <h3>Enter Internal Marks</h3>
+            </div>
+        </div>
+        <div class="panel-body">
+            {% if students %}
+            <form method="POST" class="portal-form">
+                <div class="form-field">
+                    <label for="student_id">Select Student</label>
+                    <select id="student_id" name="student_id" required>
+                        {% for s in students %}
+                        <option value="{{ s.id }}">{{ s.name }} ({{ s.roll }} — {{ s['class'] }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="subject">Subject Name</label>
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        placeholder="e.g., Python Programming"
+                        required
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="marks">Internal Marks (0 – 100)</label>
+                    <input
+                        type="number"
+                        id="marks"
+                        name="marks"
+                        placeholder="Enter score between 0 and 100"
+                        min="0"
+                        max="100"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-check-double"></i>
+                    <span>Save Marks</span>
+                </button>
+            </form>
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-user-plus"></i>
+                <p>No students registered yet.</p>
+                <a href="/students" class="btn-action primary" style="margin-top: 10px;">Register Students First</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Column: Entered Internal Marks Table -->
+    <div class="panel-card">
+        <div class="panel-header">
+            <div class="panel-header-title">
+                <i class="fa-solid fa-table-list"></i>
+                <h3>Entered Internal Marks ({{ marks_records | length }})</h3>
+            </div>
+
+            <div class="search-box-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Filter by student, roll or subject..."
+                    data-search-target="marks-table"
+                >
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="portal-table" id="marks-table">
+                <thead>
+                    <tr>
+                        <th>Roll Number</th>
+                        <th>Student Name</th>
+                        <th>Class</th>
+                        <th>Subject</th>
+                        <th>Marks (Out of 100)</th>
+                        <th>Grade Band</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in marks_records %}
+                    <tr class="data-row">
+                        <td><span class="roll-badge">{{ m.roll }}</span></td>
+                        <td><strong>{{ m.name }}</strong></td>
+                        <td><span class="class-badge">{{ m['class'] }}</span></td>
+                        <td>{{ m.subject }}</td>
+                        <td><strong>{{ m.marks }}</strong> / 100</td>
+                        <td>
+                            {% if m.marks >= 75 %}
+                                <span class="status-badge good"><i class="fa-solid fa-award"></i> Distinction</span>
+                            {% elif m.marks >= 50 %}
+                                <span class="status-badge warning"><i class="fa-solid fa-circle-check"></i> Pass</span>
+                            {% else %}
+                                <span class="status-badge low"><i class="fa-solid fa-triangle-exclamation"></i> Needs Improvement</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <i class="fa-solid fa-file-circle-question"></i>
+                            <p>No internal marks have been entered yet.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="no-search-results" style="display: none;">
+                        <td colspan="6" class="empty-state">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <p>No matching marks records found.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

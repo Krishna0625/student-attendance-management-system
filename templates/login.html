@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Login | Student Management System</title>
+    <!-- Font Awesome 6 Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Common University Portal Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-body">
+
+    <div class="login-split-wrapper">
+        <!-- Left Section: Dark Navy-Blue Academic Branding & Visuals -->
+        <section class="login-left-hero">
+            <div class="hero-brand">
+                <div class="hero-brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="hero-brand-text">
+                    <span>University Academic Suite</span>
+                    <h2>Student Management System</h2>
+                </div>
+            </div>
+
+            <div class="hero-main-copy">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Official Faculty Administration System</span>
+                </div>
+                <h1>Manage Your Institution Smarter</h1>
+                <p>
+                    A unified academic portal to streamline student enrollment, track daily classroom
+                    attendance, record internal examination scores, and generate real-time performance analytics.
+                </p>
+
+                <!-- Decorative CSS-Based Academic Illustration Cards -->
+                <div class="hero-illustration-grid">
+                    <div class="hero-feature-card">
+                        <i class="fa-solid fa-user-check"></i>
+                        <div>
+                            <h4>Attendance Tracking</h4>
+                            <p>Record and update daily student attendance with zero duplicates.</p>
+                        </div>
+                    </div>
+
+                    <div class="hero-feature-card">
+                        <i class="fa-solid fa-file-pen"></i>
+                        <div>
+                            <h4>Internal Assessment</h4>
+                            <p>Manage subject-wise internal examination marks seamlessly.</p>
+                        </div>
+                    </div>
+
+                    <div class="hero-feature-card">
+                        <i class="fa-solid fa-chart-column"></i>
+                        <div>
+                            <h4>Performance Analytics</h4>
+                            <p>Automated attendance percentages and subject score averages.</p>
+                        </div>
+                    </div>
+
+                    <div class="hero-feature-card">
+                        <i class="fa-solid fa-database"></i>
+                        <div>
+                            <h4>Centralized Records</h4>
+                            <p>Instant student lookup and structured department rosters.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-footer">
+                <span><i class="fa-solid fa-building-columns"></i> Department of Computer Science &amp; Engineering</span>
+            </div>
+        </section>
+
+        <!-- Right Section: Clean White Faculty Login Card -->
+        <section class="login-right-panel">
+            <div class="login-form-box">
+                <div class="login-header">
+                    <span class="portal-pill"><i class="fa-solid fa-lock"></i> Faculty Access</span>
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to access your faculty dashboard</p>
+                </div>
+
+                {% if error %}
+                <div class="alert-banner alert-error error">
+                    <span><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</span>
+                    <button type="button" class="alert-close-btn" aria-label="Dismiss">&times;</button>
+                </div>
+                {% endif %}
+
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="username">Faculty Username</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-regular fa-user input-icon"></i>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                placeholder="Enter your username (e.g., admin)"
+                                autocomplete="username"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-key input-icon"></i>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+                            <button
+                                type="button"
+                                id="toggle-password"
+                                class="password-toggle-btn"
+                                aria-label="Show password"
+                                title="Show / Hide Password"
+                            >
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="login-options-row">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <span class="demo-hint-badge">Demo: admin / admin123</span>
+                    </div>
+
+                    <button type="submit" class="btn-primary-full">
+                        <span>Sign In</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="login-panel-footer">
+                    <span class="portal-tag">
+                        <i class="fa-solid fa-user-shield"></i> Faculty Portal
+                    </span>
+                    <span>Authorized Personnel Only</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

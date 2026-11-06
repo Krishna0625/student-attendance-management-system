@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Performance Reports | Student Management System{% endblock %}
+{% block page_title %}Academic Performance Reports{% endblock %}
+{% block page_subtitle %}Comprehensive summary of student attendance percentages and internal mark averages{% endblock %}
+
+{% block content %}
+<div class="panel-card">
+    <div class="panel-header">
+        <div class="panel-header-title">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>Student Attendance &amp; Academic Report ({{ reports | length }})</h3>
+        </div>
+
+        <div class="search-box-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+                type="text"
+                class="search-input"
+                placeholder="Search report by name, roll or class..."
+                data-search-target="report-table"
+            >
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="portal-table" id="report-table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Roll Number</th>
+                    <th>Class</th>
+                    <th>Present Days</th>
+                    <th>Total Attendance Days</th>
+                    <th>Attendance Percentage</th>
+                    <th>Attendance Standing</th>
+                    <th>Average Internal Marks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in reports %}
+                {% if r.attendance >= 75 %}
+                    {% set bar_class = "good" %}
+                    {% set badge_label = "Good Standing" %}
+                {% elif r.attendance >= 60 %}
+                    {% set bar_class = "warning" %}
+                    {% set badge_label = "Warning" %}
+                {% else %}
+                    {% set bar_class = "low" %}
+                    {% set badge_label = "Low Attendance" %}
+                {% endif %}
+                <tr class="data-row">
+                    <td><strong>{{ r.name }}</strong></td>
+                    <td><span class="roll-badge">{{ r.roll }}</span></td>
+                    <td><span class="class-badge">{{ r['class'] }}</span></td>
+                    <td>{{ r.present_days }}</td>
+                    <td>{{ r.total_days }}</td>
+                    <td class="progress-cell">
+                        <div class="progress-top">
+                            <span>{{ r.attendance }}%</span>
+                            <small style="color: #64748b;">{{ r.present_days }}/{{ r.total_days }}</small>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill {{ bar_class }}" style="width: {{ r.attendance }}%;"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge {{ bar_class }}">
+                            {% if bar_class == 'good' %}
+                                <i class="fa-solid fa-circle-check"></i>
+                            {% elif bar_class == 'warning' %}
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                            {% else %}
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            {% endif %}
+                            {{ badge_label }}
+                        </span>
+                    </td>
+                    <td>
+                        <strong>{{ r.average }}</strong> <span style="color: #64748b; font-size: 12.5px;">/ 100</span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <p>No student performance reports available yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr class="no-search-results" style="display: none;">
+                    <td colspan="8" class="empty-state">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <p>No matching student reports found.</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

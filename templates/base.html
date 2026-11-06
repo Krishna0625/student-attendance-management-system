@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Management System{% endblock %}</title>
+    <!-- Font Awesome 6 Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Common University Portal Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <!-- Left Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div class="sidebar-brand-title">
+                    <h2>Student Management</h2>
+                    <span>University Admin Portal</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <div class="sidebar-section-label">Academic Modules</div>
+
+                <a href="/dashboard" class="sidebar-link {% if request.path == '/dashboard' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="/students" class="sidebar-link {% if request.path == '/students' %}active{% endif %}">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>Manage Students</span>
+                </a>
+
+                <a href="/attendance" class="sidebar-link {% if request.path == '/attendance' %}active{% endif %}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Attendance</span>
+                </a>
+
+                <a href="/marks" class="sidebar-link {% if request.path == '/marks' %}active{% endif %}">
+                    <i class="fa-solid fa-file-signature"></i>
+                    <span>Internal Marks</span>
+                </a>
+
+                <a href="/report" class="sidebar-link {% if request.path == '/report' %}active{% endif %}">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Performance Reports</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-link logout-link">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <div class="main-wrapper">
+            <!-- Top Navigation Bar -->
+            <header class="top-navbar">
+                <div class="navbar-left">
+                    <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle Menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="page-heading">
+                        <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                        <p>{% block page_subtitle %}Academic Attendance &amp; Performance Portal{% endblock %}</p>
+                    </div>
+                </div>
+
+                <div class="navbar-right">
+                    <div class="datetime-pill">
+                        <span class="date-text">
+                            <i class="fa-regular fa-calendar"></i>
+                            <span id="current-date">Today</span>
+                        </span>
+                        <span>
+                            <i class="fa-regular fa-clock"></i>
+                            <span id="live-clock" class="clock-badge">--:--:--</span>
+                        </span>
+                    </div>
+
+                    <div class="faculty-profile">
+                        <div class="faculty-avatar">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div class="faculty-info">
+                            <strong>{{ session.get('faculty', 'admin') | capitalize }}</strong>
+                            <small>Faculty Portal</small>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Body Content -->
+            <main class="page-content">
+                {% if message %}
+                <div class="alert-banner alert-success success">
+                    <span><i class="fa-solid fa-circle-check"></i> {{ message }}</span>
+                    <button type="button" class="alert-close-btn" aria-label="Dismiss">&times;</button>
+                </div>
+                {% endif %}
+
+                {% if error %}
+                <div class="alert-banner alert-error error">
+                    <span><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</span>
+                    <button type="button" class="alert-close-btn" aria-label="Dismiss">&times;</button>
+                </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
